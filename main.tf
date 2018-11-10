@@ -23,7 +23,7 @@ variable "instance_name" {
 ### security group ###
 ######################
 
-resource "aws_security_group" "allow all" {
+resource "aws_security_group" "allow_all" {
   description = "Allow all inbound traffic"
   ingress {
     from_port   = 0
