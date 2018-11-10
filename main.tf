@@ -11,7 +11,6 @@ variable "instance_type" {
   type = "string"
   default = "t3.small"
 }
-
 variable "instance_name" {
   type = "string"
   default = "test_instance"
@@ -58,8 +57,7 @@ resource "aws_instance" "${var.instance_name}" {
   key_name	= "liams_key"
 
   provisioner "remote-exec" {
-    inline = ["sudo apt-get install python",
-              ]
+    inline = ["sudo apt-get install python"]
     connection {
       type        = "ssh"
       user        = "ubuntu"
