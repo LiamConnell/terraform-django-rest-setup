@@ -49,7 +49,7 @@ resource "aws_security_group" "allow all ${var.instance_type}" {
 
 
 
-resource "aws_instance" ${var.instance_type}" {
+resource "aws_instance" "${var.instance_type}" {
   ami           = "ami-0231c1de0d92fe7a2"
   instance_type = "${var.instance_type}"
   vpc_security_group_ids	= [
