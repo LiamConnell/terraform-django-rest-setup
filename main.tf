@@ -2,33 +2,10 @@ provider "aws" {
   region     = "us-west-2"
 }
 
-######################
-### security group ###
-######################
-
-resource "aws_security_group" "allow_all" {
-  description = "Allow all inbound traffic"
-  ingress {
-    from_port   = 0
-    to_port     = 65535
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  tags {
-    Name = "allow_all"
-  }
-}
 
 ###########
 ### EC2 ###
 ###########
-
 resource "aws_instance" "test_instance" {
   ami           = "ami-0231c1de0d92fe7a2"
   instance_type = "${var.instance_type}"
@@ -48,7 +25,33 @@ resource "aws_instance" "test_instance" {
   provisioner "local-exec" {
     command = "echo \"alias ssh_alias='ssh -i ${var.ssh_key_private} ubuntu@${self.public_ip}'\" > script.sh && source script.sh" # && rm -rf source.sh"
   }
+  provisioner "local-exec" {
+    command = "echo \"yes yes | ansible-playbook -u ubuntu -i '${self.public_ip},' --private-key ${var.ssh_key_private} provision.yml\" > call_ansible.sh"
+  }
   #provisioner "local-exec" {
 #    command = "yes yes | ansible-playbook -u ubuntu -i '${self.public_ip},' --private-key ${var.ssh_key_private} provision.yml"
 #  }
+}
+
+
+######################
+### security group ###
+######################
+resource "aws_security_group" "allow_all" {
+  description = "Allow all inbound traffic"
+  ingress {
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags {
+    Name = "allow_all"
+  }
 }
