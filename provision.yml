@@ -1,0 +1,63 @@
+---
+
+- hosts: all
+  become: yes
+  # roles:
+  #   - base
+
+  tasks:
+    - name: Wait for automatic system updates
+      become: yes
+      shell: "while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done;"
+    - name: apt get update and install apache2
+      apt:
+        name: apache2
+        update_cache: yes
+    - name: apt get mod wsgi py3
+      apt:
+        name: libapache2-mod-wsgi-py3
+
+    - name: Creates directory
+      file: path=/home/ubuntu/django state=directory
+    - name: install virtualenv
+      pip:
+        name: virtualenv
+    - name: venv and install django
+      pip:
+        name: Django==2.1.3
+        virtualenv: /home/ubuntu/django/venv
+        virtualenv_python: python3.5
+    - name: start django script
+      script: scripts/start_django.sh
+      args:
+        chdir: /home/ubuntu/django/
+
+
+    # - name: Execute the script
+    #   shell: scripts/setup_web_server.sh
+
+    - name: copy wsgi.py file
+      copy:
+        src: sources/wsgi.py
+        dest: /home/ubuntu/django/mysite/mysite/wsgi.py
+
+    - name: copy wsgi.conf file
+      copy:
+        src: sources/wsgi.conf
+        dest: /home/ubuntu/wsgi.conf
+
+    - name: allowed_hosts all
+      command: sudo sed -i 's/ALLOWED_HOSTS.*/ALLOWED_HOSTS = ["*"]/' /home/ubuntu/django/mysite/mysite/settings.py
+
+    - name: move django dir
+      command: mv django/ /var/www/django/
+    - name: move wsgi.conf
+      command: mv wsgi.conf /etc/apache2/conf-available/wsgi.conf
+    - name: final script 1
+      command: a2enconf wsgi
+    - name: final script 2
+      command: /etc/init.d/apache2 restart
+    # - name: Get Repo
+    #   git:
+    #     repo: 'https://github.com/LiamConnell/notebook_demos.git'
+    #     dest: /home/ubuntu/notebook_demos
