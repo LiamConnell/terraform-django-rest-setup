@@ -23,7 +23,7 @@ variable "instance_name" {
 ### security group ###
 ######################
 
-resource "aws_security_group" "allow all ${var.instance_type}" {
+resource "aws_security_group" "allow all" {
   description = "Allow all inbound traffic"
   ingress {
     from_port   = 0
@@ -53,7 +53,7 @@ resource "aws_instance" "${var.instance_type}" {
   ami           = "ami-0231c1de0d92fe7a2"
   instance_type = "${var.instance_type}"
   vpc_security_group_ids	= [
-		"${aws_security_group.allow_all2.id}"
+		"${aws_security_group.allow_all.id}"
 			]
   key_name	= "liams_key"
 
