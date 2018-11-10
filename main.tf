@@ -11,10 +11,10 @@ variable "instance_type" {
   type = "string"
   default = "t3.small"
 }
-variable "instance_name" {
-  type = "string"
-  default = "test_instance"
-}
+#variable "instance_name" {
+#  type = "string"
+#  default = "test_instance"
+#}
 
 
 
@@ -48,7 +48,7 @@ resource "aws_security_group" "allow_all" {
 
 
 
-resource "aws_instance" "${var.instance_name}" {
+resource "aws_instance" "test_instance" {   #${var.instance_name}" {
   ami           = "ami-0231c1de0d92fe7a2"
   instance_type = "${var.instance_type}"
   vpc_security_group_ids	= [
