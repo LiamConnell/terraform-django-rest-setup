@@ -44,7 +44,7 @@
         dest: /home/ubuntu/django/mysite/mysite/urls.py
     - name: copy views.py file
       copy:
-        src: sources/urls.py
+        src: sources/views.py
         dest: /home/ubuntu/django/mysite/mysite/views.py
 
     - name: copy wsgi.py file
@@ -62,6 +62,8 @@
     - name: move wsgi.conf
       command: mv wsgi.conf /etc/apache2/conf-available/wsgi.conf
     - name: a2enconf wsgi command
+    - name: django collect static
+      command: /var/www/django/venv/bin/python manage.py collectstatic
       command: a2enconf wsgi
     - name: restart apache server
       command: /etc/init.d/apache2 restart
