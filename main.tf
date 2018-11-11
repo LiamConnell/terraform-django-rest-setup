@@ -23,7 +23,7 @@ resource "aws_instance" "test_instance" {
     }
   }
   provisioner "local-exec" {
-    command = "echo \"alias ssh_alias='ssh -i ${var.ssh_key_private} ubuntu@${self.public_ip}'\" > script.sh && source script.sh" # && rm -rf source.sh"
+    command = "echo \"alias ssh-terra='ssh -i ${var.ssh_key_private} ubuntu@${self.public_ip}'\" > ssh_alias.sh && source ssh_alias.sh"
   }
   provisioner "local-exec" {
     command = "echo \"yes yes | ansible-playbook -u ubuntu -i '${self.public_ip},' --private-key ${var.ssh_key_private} provision.yml\" > call_ansible.sh"
