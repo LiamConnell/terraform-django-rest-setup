@@ -4,3 +4,4 @@ ssh_alias.sh
 .terraform/*
 call_ansible.sh
 provision.retry
+.keys
